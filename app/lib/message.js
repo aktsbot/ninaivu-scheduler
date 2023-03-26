@@ -93,3 +93,14 @@ export const getQueuedCount = async () => {
     return 0
   }
 }
+
+export const sendMessage = async ({ id }) => {
+  try {
+    const messageInfo = await MessageReceipt.findOne({ _id: id }).populate("message").populate("patient");
+    console.log(messageInfo)
+    return true
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}
