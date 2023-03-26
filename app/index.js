@@ -19,8 +19,8 @@ async function queuer() {
 
   const date = new Date()
   const day = days[new Date().getDay()]
-  // const date = '2023-03-26T03:20:01.041Z'
-  // const day = 'monday'
+  // const date = '2023-03-27T03:20:01.041Z'
+  // const day = 'tuesday'
   const patientsForDay = await getPatientList({ day })
   console.log('patients ', patientsForDay.length)
   if (!patientsForDay.length) {
