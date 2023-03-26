@@ -1,5 +1,5 @@
 import { connectDB } from './db.js';
-import { filterPatientsFromToSendList } from './lib/message.js';
+import { filterPatientsFromToSendList, getMessageQueueList, insertMessageReceiptEntries } from './lib/message.js';
 connectDB()
 
 import { getPatientList } from './lib/patient.js';
@@ -30,7 +30,21 @@ async function queuer() {
   // console.log(patientsForDay)
   const filteredList = await filterPatientsFromToSendList({ date, patients: patientsForDay })
   console.log('filtered ', filteredList.length)
-  console.log(filteredList)
+  if (!filteredList.length) {
+    console.log('Filtered list returned empty')
+    return
+  }
+
+  let entries = await getMessageQueueList({ patients: filteredList })
+  if (!entries.length) {
+    console.log('Entries list returned empty')
+    return;
+  }
+
+  entries = entries.map(e => ({ ...e, date: date }))
+  await insertMessageReceiptEntries({ entries })
+  console.log('Inserted new entries ', entries.length)
+
   return;
 }
 
