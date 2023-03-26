@@ -17,17 +17,16 @@ async function queuer() {
   //
   // insert the list into message_receipt collection - status: queued
 
-  // const date = new Date()
-  // const day = days[new Date().getDay()]
-  const date = '2023-03-26T03:20:01.041Z'
-  const day = 'monday'
+  const date = new Date()
+  const day = days[new Date().getDay()]
+  // const date = '2023-03-26T03:20:01.041Z'
+  // const day = 'monday'
   const patientsForDay = await getPatientList({ day })
   console.log('patients ', patientsForDay.length)
   if (!patientsForDay.length) {
     console.log('No patients to send for ', day, date)
     return
   }
-  // console.log(patientsForDay)
   const filteredList = await filterPatientsFromToSendList({ date, patients: patientsForDay })
   console.log('filtered ', filteredList.length)
   if (!filteredList.length) {

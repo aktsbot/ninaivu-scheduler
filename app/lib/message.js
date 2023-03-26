@@ -1,6 +1,7 @@
 import MessageReceipt from '../models/message_receipt.model.js'
 import Message from '../models/message.model.js'
 
+// https://stackoverflow.com/questions/8636617/how-to-get-start-and-end-of-day-in-javascript
 function getStartEnd(date) {
   let start = new Date(date);
   start.setUTCHours(0, 0, 0, 0);
@@ -12,7 +13,7 @@ function getStartEnd(date) {
 }
 
 export const filterPatientsFromToSendList = async ({ date, patients }) => {
-  let list = patients.map(p => p._id)
+  let list = patients.map(p => p._id.toString())
   try {
 
     const { start, end } = getStartEnd(date)
@@ -28,7 +29,8 @@ export const filterPatientsFromToSendList = async ({ date, patients }) => {
     }).lean()
 
     if (receipts.length) {
-      list = list.filter(l => l != receipts.patient)
+      const receiptPatients = receipts.map(r => r.patient.toString());
+      list = list.filter(l => !receiptPatients.includes(l))
     }
   } catch (error) {
     console.log(error)
