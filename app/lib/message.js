@@ -84,3 +84,12 @@ export const insertMessageReceiptEntries = async ({ entries }) => {
     console.log(error)
   }
 }
+
+export const getQueuedCount = async () => {
+  try {
+    return await MessageReceipt.countDocuments({ status: 'queued' })
+  } catch (error) {
+    console.log(error)
+    return 0
+  }
+}

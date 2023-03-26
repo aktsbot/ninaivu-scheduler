@@ -1,5 +1,5 @@
 import { connectDB } from './db.js';
-import { filterPatientsFromToSendList, getMessageQueueList, insertMessageReceiptEntries } from './lib/message.js';
+import { filterPatientsFromToSendList, getMessageQueueList, getQueuedCount, insertMessageReceiptEntries } from './lib/message.js';
 connectDB()
 
 import { getPatientList } from './lib/patient.js';
@@ -47,5 +47,13 @@ async function queuer() {
   return;
 }
 
+async function runner() {
+  // get tasks that are in the "queued" state
+  const queuedCount = await getQueuedCount()
+  console.log('To send ', queuedCount)
+}
+
 // TODO: queuer will be replace by node-cron
-queuer()
+// queuer()
+runner()
+
