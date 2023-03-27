@@ -1,5 +1,5 @@
 import { connectDB } from './db.js';
-import { filterPatientsFromToSendList, getMessageQueueList, getQueuedCount, insertMessageReceiptEntries, sendMessage } from './lib/message.js';
+import { filterPatientsFromToSendList, getMessageQueueList, getQueuedCount, getQueuedMessages, insertMessageReceiptEntries, sendMessage } from './lib/message.js';
 connectDB()
 
 import { getPatientList } from './lib/patient.js';
@@ -52,11 +52,25 @@ async function runner() {
   const queuedCount = await getQueuedCount()
   console.log('To send: ', queuedCount)
 
-  // const m = await sendMessage({ id: '64200022829a623ed0b57919' })
-  // console.log(m)
+  const limit = 10;
+  let totalLoops = Math.ceil(queuedCount / limit)
+
+  let mrs = await getQueuedMessages({ limit });
+  let loop = 0;
+  while (mrs.length && loop < totalLoops) {
+    // console.log('loop ', loop)
+    for (const mr of mrs) {
+      await sendMessage({ m: mr })
+      // console.log('  ', mr._id)
+    }
+    mrs = await getQueuedMessages({ limit });
+    loop++;
+  }
+
+  console.log('Completed sending messages ')
 }
 
 // TODO: queuer will be replace by node-cron
 // queuer()
-runner()
+// runner()
 

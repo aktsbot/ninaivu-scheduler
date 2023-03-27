@@ -94,13 +94,37 @@ export const getQueuedCount = async () => {
   }
 }
 
-export const sendMessage = async ({ id }) => {
+export const getQueuedMessages = async ({ limit }) => {
   try {
-    const messageInfo = await MessageReceipt.findOne({ _id: id }).populate("message").populate("patient");
-    console.log(messageInfo)
+    // console.log(limit, skip)
+    return await MessageReceipt.find({
+      status: 'queued'
+    }, { uuid: 1, patient: 1, message: 1, date: 1, status: 1, notes: 1 }, {
+      limit
+    }).populate('message').populate('patient').lean()
+  } catch (error) {
+    console.log(error)
+    return []
+  }
+}
+
+
+// TODO: doing the actual message sending
+// currently it just changes the status
+export const sendMessage = async ({ m }) => {
+  try {
+    const messageInfo = await MessageReceipt.updateOne({ _id: m._id }, { $set: { status: 'sent' } });
+    // console.log(messageInfo)
     return true
   } catch (error) {
     console.log(error)
+    await MessageReceipt.updateOne({ _id: id }, {
+      $set: {
+        status: 'failed', notes: {
+          $concat: ["$notes", error.message]
+        }
+      }
+    });
     return false
   }
 }
