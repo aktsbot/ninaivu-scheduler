@@ -5,7 +5,8 @@ export const getPatientList = async ({ day }) => {
   let list = [];
   try {
     const patients = await Patient.find({
-      messagesEvery: day
+      messagesEvery: day,
+      notes: { $ne: "test-user" },
     }, {
       _id: 1, uuid: 1, mobileNumbers: 1
     }).lean()

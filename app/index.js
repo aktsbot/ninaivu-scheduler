@@ -1,3 +1,6 @@
+import cron from 'node-cron'
+
+import config from './config.js'
 import { connectDB } from './db.js';
 import { filterPatientsFromToSendList, getMessageQueueList, getQueuedCount, getQueuedMessages, insertMessageReceiptEntries, sendMessage } from './lib/message.js';
 connectDB()
@@ -74,3 +77,12 @@ async function runner() {
 // queuer()
 // runner()
 
+cron.schedule('* * * * *', () => {
+  console.log('running task every minute');
+  queuer()
+});
+
+cron.schedule("*/5 * * * *", () => {
+  console.log('running task every 5 mins');
+  runner()
+})
