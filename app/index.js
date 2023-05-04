@@ -8,7 +8,7 @@ connectDB()
 import { getPatientList } from './lib/patient.js';
 import { updateLastRun, updateCreditsRemaining } from './lib/scheduler.js';
 
-const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thrusday', 'friday', 'saturday'];
+const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 async function queuer() {
   // find the current date
