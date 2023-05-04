@@ -6,6 +6,7 @@ import { filterPatientsFromToSendList, getMessageQueueList, getQueuedCount, getQ
 connectDB()
 
 import { getPatientList } from './lib/patient.js';
+import { updateLastRun, updateCreditsRemaining } from './lib/scheduler.js';
 
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thrusday', 'friday', 'saturday'];
 
@@ -19,6 +20,8 @@ async function queuer() {
   // if no, add them to this list
   //
   // insert the list into message_receipt collection - status: queued
+
+  await updateLastRun();
 
   const date = new Date()
   const day = days[new Date().getDay()]
@@ -85,4 +88,9 @@ cron.schedule('* * * * *', () => {
 cron.schedule("*/5 * * * *", () => {
   console.log('running task every 5 mins');
   runner()
+})
+
+cron.schedule("*/30 * * * *", () => {
+  console.log('running task every 30 mins');
+  updateCreditsRemaining()
 })
