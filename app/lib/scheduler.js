@@ -59,14 +59,15 @@ export const updateCreditsRemaining = async function () {
   }
 };
 
-export const sendTwilioSMS = async function ({ mobileNumber, text }) {
+export const sendTwilioSMS = function ({ mobileNumber, text }) {
   try {
-    return await twilioClient.messages.create({
+    return twilioClient.messages.create({
       body: text,
       from: config.twilio_smsFrom,
       to: mobileNumber,
     });
   } catch (error) {
     console.log(error);
+    return false;
   }
 };
